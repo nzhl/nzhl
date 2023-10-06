@@ -83,8 +83,20 @@ func main() {
 	}
 	defer file.Close()
 
-	location, _ := time.LoadLocation("Asia/Hong_Kong")
+	location, err := time.LoadLocation("Asia/Hong_Kong")
+	if err != nil {
+		fmt.Printf("Error loading location: %s\n", err)
+		return
+	}
 	timeInUTC8 := cmcResp.Status.Timestamp.In(location)
+
+	if cmcResp.Status.ErrorCode != 0 {
+		fmt.Printf("## 🚨 Error\n\n")
+		fmt.Printf("Error Code: %d\n\n", cmcResp.Status.ErrorCode)
+		fmt.Printf("Error Message: %s\n\n", *cmcResp.Status.ErrorMessage)
+		fmt.Printf("Last Updated: %s", timeInUTC8)
+		return
+	}
 
 	fmt.Fprintf(file, "## 📈 Crypto Prices\n\n")
 	fmt.Fprintf(file, "| Coin | Price |\n")
