@@ -1,0 +1,29 @@
+name: Sync cmc info
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CMC_PRO_API_KEY: ${{ secrets.CMC_PRO_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.21.0"
+      - name: Create local changes
+        run: |
+          make run
+      - name: Commit files
+        run: |
+          git config --local user.email ${{ env.EMAIL }}
+          git config --local user.name ${{ env.NAME }}
+          git commit -m "feat: sync cmc info at $(date '+%b %d/%H:%M:%S')"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
