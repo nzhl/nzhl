@@ -1,4 +1,4 @@
-## 📈 Crypto Prices
+## 📈 Crypto Prices2
 
 | Coin | Price |
 | ---- | ----- |
